@@ -15,8 +15,9 @@ namespace Project
         private int Seniority;
         private int Salary;
         private EmployeesTypes Type;
-        private EmployeesStatuses status;
-        private Employee CreatedBy;
+        private EmployeesStatuses Status;
+        private int CreatedBy;
+        private Employee host;
 
 
 
@@ -26,7 +27,7 @@ namespace Project
         //public System.Collections.Generic.List<Order> orders;
 
 
-        public Employee(int id, string name, int Seniority, int Salary, EmployeesTypes Type, EmployeesStatuses status, Employee CreatedBy, bool is_new)
+        public Employee(int id, string name,int Seniority, int Salary, EmployeesTypes Type, EmployeesStatuses status , int CreatedBy, bool is_new)
         {
             this.EmployeeId = id;
             this.EmployeeName = name;
@@ -34,80 +35,130 @@ namespace Project
             this.Seniority = Seniority;
             this.Salary = Salary;
             this.Type = Type;
-            this.status = status;
+            this.Status = status;
             this.CreatedBy = CreatedBy;
             if (is_new)
             {
-                // this.create_worker();
-                //Program.Employee.Add(this);
+                this.create_Employee();
+                Program.Employee.Add(this);
 
             }
         }
 
-        public int getId()
+        public static Employee seekWorker(int id)
+        {
+            foreach (Employee w in Program.Employee)
+            {
+                if (w.GetEmployeeId() == id)
+                    return w;
+            }
+            return null;
+        }
+
+
+        public int GetEmployeeId()
         {
             return this.EmployeeId;
         }
 
-        public void set_id(int id)
+        public void SetEmployeeId(int employeeId)
         {
-            this.EmployeeId = id;
+            this.EmployeeId = employeeId;
         }
 
-        public void set_name(string name)
+        public string GetEmployeeName()
         {
-            this.EmployeeName = name; ;
+            return this.EmployeeName;
         }
 
-        public int getSeniority()
+        public void SetEmployeeName(string employeeName)
+        {
+            this.EmployeeName = employeeName;
+        }
+
+        public int GetSeniority()
         {
             return this.Seniority;
         }
 
-        public void set_Seniority(int seniority)
+        public void SetSeniority(int seniority)
         {
-            this.Seniority = seniority; ;
+            this.Seniority = seniority;
         }
 
-        public int getSalary()
+        public int GetSalary()
         {
             return this.Salary;
         }
 
-        public void set_Salary(int salary)
+        public void SetSalary(int salary)
         {
             this.Salary = salary;
         }
 
-        public EmployeesStatuses getStatus()
-        {
-            return this.status;
-        }
-
-        public void set_Status(EmployeesStatuses status)
-        {
-            this.status = status;
-        }
-
-        public EmployeesTypes getType()
+        public EmployeesTypes GetType()
         {
             return this.Type;
         }
 
-        public void set_type(EmployeesTypes type)
+        public void SetType(EmployeesTypes type)
         {
-            this.Type = type; ;
+            this.Type = type;
         }
 
-        public Employee getCreatedBy()
+        public EmployeesStatuses GetStatus()
         {
-            return this.CreatedBy;
+            return this.Status;
         }
 
-        public void set_CreatedBy(Employee createdBy)
+        public void SetStatus(EmployeesStatuses status)
+        {
+            this.Status = status;
+        }
+
+        public Employee GetCreatedBy()
+        {
+            return this.host;
+        }
+
+        public void SetCreatedBy(int createdBy)
         {
             this.CreatedBy = createdBy;
         }
+        public void create_Employee()
+        {
+            Console.WriteLine(this.Status);
+            SqlCommand c = new SqlCommand();
+            c.CommandText = "EXECUTE dbo.insertEmployee @ID , @Name, @Seniority , @Salary , @Type , @Status , @CreatedBy";
+            c.Parameters.AddWithValue("@ID", this.EmployeeId);
+            c.Parameters.AddWithValue("@Name", this.EmployeeName.ToString());
+            c.Parameters.AddWithValue("@Seniority", this.Seniority);
+            c.Parameters.AddWithValue("@Salary", this.Salary);
+            c.Parameters.AddWithValue("@Type", this.Type.ToString());
+            c.Parameters.AddWithValue("@Status", this.Status.ToString());
+            c.Parameters.AddWithValue("@CreatedBy", this.CreatedBy);
+            SQL_CON SC = new SQL_CON();
+            SC.execute_non_query(c);
+        }
+
+        public void Update_Employee()
+        {
+            SqlCommand c = new SqlCommand();
+            c.CommandText = "EXECUTE dbo.updateEmployee @ID , @Name , @Seniority , @Salary , @Type , @Status , @CreatedBy";
+            c.Parameters.AddWithValue("@ID", this.EmployeeId);
+            c.Parameters.AddWithValue("@Name", this.EmployeeName.ToString());
+            c.Parameters.AddWithValue("@Seniority", this.Seniority);
+            c.Parameters.AddWithValue("@Salary", this.Salary);
+            c.Parameters.AddWithValue("@Type", this.Type.ToString());
+            c.Parameters.AddWithValue("@Status", this.Status.ToString());
+            c.Parameters.AddWithValue("@CreatedBy", this.CreatedBy.ToString());
+            SQL_CON SC = new SQL_CON();
+            SC.execute_non_query(c);
+        }
+
+
+
+
 
 
     }
